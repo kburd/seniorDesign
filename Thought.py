@@ -1,6 +1,6 @@
 class Thought:
 
-    def __init__(self, image, speed, direction):
+    def __init__(self, image, speed, direction, display):
 
         self.image = image
         self.speed = speed
