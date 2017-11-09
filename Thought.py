@@ -5,3 +5,4 @@ class Thought:
         self.image = image
         self.speed = speed
         self.direction = direction
+        self.display = display
