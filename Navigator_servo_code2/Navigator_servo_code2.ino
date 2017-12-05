@@ -12,34 +12,31 @@ void setup() {
   TURN.attach(motorOnePin);
   DRIVE.attach(motorTwoPin);
 
-//  TURN.writeMicroseconds(1500);
-//  DRIVE.writeMicroseconds(1430);    // 1430
-
   pinMode(LED_BUILTIN, OUTPUT);  
 
 //  println(Serial.list()); // List COM-ports
 //  
 //  // CAN WE USE THIS IN PYTHON/C++ TO PREVENT PORT UPDATE PROBLEM??
 //  port = new Serial(this, Serial.list()[1], 19200); //select second com-port from the list
-
   Serial.begin(9600);
-  
-  
+  delay(1);
+  DRIVE.write(90);
+  TURN.write(90);
   
 }
 
 void loop() {
-  
+  delay(1);
   if (Serial.available()) {
     int val = Serial.read();
-//    val = 'v';
     Serial.println(val);
     switch (val) {
       
       // full left turn
       case 'a':
       {
-        TURN.writeMicroseconds(2200);   // use "TURN.write(x)" instead, 0 < x < 180 degrees
+//        TURN.writeMicroseconds(2200);   // FULL RIGHT TURN HITS ROBOT GUARD
+        TURN.write(170);
         digitalWrite(LED_BUILTIN, HIGH);
         break;
       }
@@ -47,7 +44,8 @@ void loop() {
       // half left turn
       case 'q':
       {
-        TURN.writeMicroseconds(1850);
+//        TURN.writeMicroseconds(1850);
+        TURN.write(135);
         digitalWrite(LED_BUILTIN, LOW);
         break;
       }
@@ -55,55 +53,63 @@ void loop() {
       //full right turn
       case 'd':
       {
-        TURN.writeMicroseconds(800);
+//        TURN.writeMicroseconds(800);
+        TURN.write(15);       // FULL RIGHT TURN HITS ROBOT GUARD
         break;
       }
   
       // half right turn
       case 'e':
       {
-        TURN.writeMicroseconds(1150);
+//        TURN.writeMicroseconds(1150);
+        TURN.write(45);
         break;
       }
   
-      // turn straight
+      // go straight
       case 'w':
       {
-        TURN.writeMicroseconds(1400);
+//        TURN.writeMicroseconds(1400);
+          TURN.write(90);
         break;
       }
   
-      // full forward
+      // full reverse
       case 'm':
       {
-        DRIVE.writeMicroseconds(1000);
+//        DRIVE.writeMicroseconds(1000);
+        DRIVE.write(0);
         break;
       }
   
-      // half forward
+      // half reverse
       case 'n':
       {
-        DRIVE.writeMicroseconds(1350);
+//        DRIVE.writeMicroseconds(1350);
+        DRIVE.write(135);
         break;
       }
   
       // STOP
       case 'b':
       {
-        DRIVE.writeMicroseconds(1430);
+//        DRIVE.writeMicroseconds(1430);
+        DRIVE.write(90);
         break;
       }
   
-      // half reverse
+      // half forward
       case 'v':
       {
-        DRIVE.writeMicroseconds(1600);
+//        DRIVE.writeMicroseconds(1600);
+        DRIVE.write(45);
         break;
       }
-      // full reverse
+      // full forward
       case 'c':
       {
-        DRIVE.writeMicroseconds(2000);
+//        DRIVE.writeMicroseconds(2000);
+        DRIVE.write(0);
         break;
       }
     }
