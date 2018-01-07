@@ -3,6 +3,9 @@ import serial, time
 from pynput import keyboard
 import cv2
 from threading import Thread
+import os, errno
+
+DIR_NAME='drive_images'
 
 ser = None
 finished = False
@@ -33,18 +36,24 @@ def on_release(key):
 			print('Threw an exception!!!!! :C',e)
 
 def read_images():
-    print('Pop a cap in dat ass')
+    new_dir = os.getcwd()+'/'+DIR_NAME
+    try:
+        if not os.path.isdir(new_dir):
+            os.makedirs(new_dir)
+    except OSError as e:
+        print(e)
+    print('Pop bottles')
     cap = cv2.VideoCapture(0)
     while True:
 		if started and finished:
 			break
 		if started and not finished:
-			print('Lets get it started hah!')
+			print('Lets get it started, hah!')
 			index = 0
 			while(not finished):
-				print('Do the running man')
 				ret, frame = cap.read()
-				cv2.imwrite('serially_image{0}.png'.format(index),frame)
+				if not frame is None:
+                                    cv2.imwrite('{1}/serially_image{0}.png'.format(index,DIR_NAME),frame)
 				index +=1
     cap.release()
     return True
