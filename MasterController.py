@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import urllib.request
 
 def alignmentAdjustment(img):
 
@@ -138,12 +137,7 @@ while True:
     result,img = cap.read()
 
     if result:
-
-        direction = alignmentAdjustment(img)
-        speed = b"b"
-
-        #url = "http://128.4.208.193:5000/?speed=%s&direction=%s&" % (speed, direction)
-        #urllib.request.urlopen(url)
+        alignmentAdjustment(img)
         #cv2.imshow("datass", img)
     else:
         print("Failed to Open")
