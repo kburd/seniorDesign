@@ -23,6 +23,8 @@ void setup() {
   pinMode(commPinTwo, INPUT);
   pinMode(commPinThree, INPUT);
 
+  pinMode(LED_BUILTIN, OUTPUT);
+
   delay(1);
   DRIVE.write(90);
   TURN.write(90);
@@ -37,35 +39,53 @@ void loop() {
   bool bitTwo = digitalRead(commPinTwo);
   bool bitThree = digitalRead(commPinThree);
 
-  //Left
+  //Straight
   if( !bitOne & !bitTwo & !bitThree ){
-     TURN.write(155);
-  }
-
-  //Stright
-  else if( !bitOne & !bitTwo & bitThree ){
      TURN.write(90);
   }
 
+  //Left
+  else if( !bitOne & !bitTwo & bitThree ){
+     TURN.write(155);
+  }
+
   //Right
+  // NOTE: turning too far right will cause the tierod 
+  // to rub against the bumper and burn out the motor
   else if( !bitOne & bitTwo & !bitThree ){
      TURN.write(25);
   }
 
-  //Stop
+  //Stop & straight
   else if( !bitOne & bitTwo & bitThree ){
      DRIVE.write(90);
+     TURN.write(90);
   }
 
   //Go
   else if( bitOne & !bitTwo & !bitThree ){
-     DRIVE.write(5);
+     DRIVE.write(100);
   }
 
-  //Reset
+  //TEST INPUT PINS - turn left, right, then straight
   else if( bitOne & bitTwo & bitThree ){
     DRIVE.write(90);
+
+    //brief left, right, then straight
+    TURN.write(155);
+    delay(500);
+    TURN.write(25);
+    delay(500);
     TURN.write(90);
+
+    // this is just to give visual output after pin testing
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(200);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(200);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(200);
+    digitalWrite(LED_BUILTIN, LOW);
   }
   
 }

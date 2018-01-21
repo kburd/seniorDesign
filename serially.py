@@ -35,33 +35,33 @@ def on_release(key):
 		except Exception as e:
 			print('Threw an exception!!!!! :C',e)
 
-def read_images():
-    new_dir = os.getcwd()+'/'+DIR_NAME
-    try:
-        if not os.path.isdir(new_dir):
-            os.makedirs(new_dir)
-    except OSError as e:
-        print(e)
-    print('Pop bottles')
-    cap = cv2.VideoCapture(0)
-    while True:
-		if started and finished:
-			break
-		if started and not finished:
-			print('Lets get it started, hah!')
-			index = 0
-			while(not finished):
-				ret, frame = cap.read()
-				if not frame is None:
-                                    cv2.imwrite('{1}/serially_image{0}.png'.format(index,DIR_NAME),frame)
-				index +=1
-    cap.release()
-    return True
+# def read_images():
+#     new_dir = os.getcwd()+'/'+DIR_NAME
+#     try:
+#         if not os.path.isdir(new_dir):
+#             os.makedirs(new_dir)
+#     except OSError as e:
+#         print(e)
+#     print('Pop bottles')
+#     cap = cv2.VideoCapture(0)
+#     while True:
+# 		if started and finished:
+# 			break
+# 		if started and not finished:
+# 			print('Lets get it started, hah!')
+# 			index = 0
+# 			while(not finished):
+# 				ret, frame = cap.read()
+# 				if not frame is None:
+#                                     cv2.imwrite('{1}/serially_image{0}.png'.format(index,DIR_NAME),frame)
+# 				index +=1
+#     cap.release()
+#     return True
 	
 time.sleep(1)
 # Collect events until released
-capture_thread = Thread(target=read_images)
-capture_thread.start()
+# capture_thread = Thread(target=read_images)
+# capture_thread.start()
 with keyboard.Listener(
         on_release=on_release) as listener:
     listener.join()

@@ -1,7 +1,12 @@
 import cv2
 import numpy as np
+import urllib.request
+import time
+
+prev_dir = "v"  # used to reduce printing redundant directions
 
 def alignmentAdjustment(img):
+    global prev_dir
 
     #Take in image and calculate hough lines
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -16,7 +21,8 @@ def alignmentAdjustment(img):
     tempLines = []
 
     if(lines is None or lines.all() == None):
-        return "---------------"
+        print("---------------")
+        return
 
     tAvg = 0
     for line in lines:
@@ -111,38 +117,76 @@ def alignmentAdjustment(img):
     #Displays image
     # h, w, layers = img.shape
     # resize = cv2.resize(img, (h/2, w/2))
-    cv2.imshow("dat", img)
+    #cv2.imshow("dat", img)
 
 
     #Left/Right/Straight Logic
-    if width/2 - xi < -width/5:
-        #turn right
-        print("<")
-        return b'q'
+    # turn right
+    if width/2 - xi < -width/4:
+        return 'right'
 
-    elif width/2 - xi > width/5:
-        #turn left
-        print(">")
-        return b'e'
+    # turn left
+    elif width/2 - xi > width/4:
+        return 'left'
 
+    # straight
     else:
-        #go straight
-        print("^")
-        return b'w'
+        return 'straight'
 
+def update_rover_moves(speed, direction):
+    url = "http://128.4.208.193:5000/?speed=%s&direction=%s&" % (speed, direction)
+    urllib.request.urlopen(url).read()
+
+# read frames from server hosted on the Pi
 cap = cv2.VideoCapture("http://128.4.208.193:8080/?action=stream?dummy=frame.mjpg")
 
+update_rover_moves("go","straight")
+
 while True:
+    if autonomous_mode:
 
-    result,img = cap.read()
+        result,img = cap.read()
 
-    if result:
-        alignmentAdjustment(img)
-        #cv2.imshow("datass", img)
+        if result:
+            # find the direction based on image
+            direction = alignmentAdjustment(img)
+
+            speed = "go"
+                  # NEED to change later?
+
+            # if direction != None and direction != prev_dir:
+                # prev_dir = direction   # used for outputting current direction of wheels
+            if direction != None:
+                # update robot movement by pinging with correct speed & direction
+                # DO WE NEED TO FIND A WAY TO UDPATE THE IP IF IT CHANGES??
+                # we could write the ip in a text file and update accordingly...
+                update_rover_moves(speed, direction)
+                
+
+            # show image on screen
+            cv2.imshow("datass", img)
+
+        else:
+            print("Lost Connection")
+            print("Trying to reconnect...")
+            time.sleep(2)
+            result,img = cap.read()
+            if result:
+                print("Connection success")
+                time.sleep(1)
+                cv2.imShow(img)
+                waitKey(2000)
+            break
+
     else:
-        print("Failed to Open")
+
+
+    # force break python code
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        update_rover_moves("stop", "straight")
         break
+
+print("ADIOS")
 
 cap.release()
 cv2.destroyAllWindows()
