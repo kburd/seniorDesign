@@ -143,6 +143,7 @@ cap = cv2.VideoCapture("http://128.4.208.193:8080/?action=stream?dummy=frame.mjp
 update_rover_moves("go","straight")
 
 while True:
+
     if autonomous_mode:
 
         result,img = cap.read()

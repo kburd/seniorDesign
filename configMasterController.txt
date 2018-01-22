@@ -1,0 +1,5 @@
+lowerThreshold=75
+upperThreshold=100
+streamIpAddress=128.4.208.193
+streamPort=8080
+raspPort=5000
