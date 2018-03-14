@@ -8,10 +8,50 @@ import sys
 
 
 directory = "C:\\Users\\kaleb\\d2\\data"
-sideLength = 20
-yPosition = 5
 
-def filterImages(tubName,color, tint):
+
+
+def filterImage(image,color,tint):
+
+    sideLength = 20
+    yPosition = 5
+
+    width, height = image.size
+
+    pix = image.load()
+
+    for i in range((width // 2) - (sideLength // 2), (width // 2) + (sideLength // 2)):
+        for j in range(yPosition, sideLength + yPosition):
+
+            red = pix[i, j][0]
+            green = pix[i, j][1]
+            blue = pix[i, j][2]
+
+            if color == "r":
+                red = 255
+
+                if tint == "f":
+                    green = 0
+                    blue = 0
+
+            elif color == "g":
+                green = 255
+
+                if tint == "f":
+                    red = 0
+                    blue = 0
+
+            elif color == "b":
+                if tint == "f":
+                    green = 0
+                    red = 0
+
+            pix[i, j] = (red, green, blue)
+
+    return image
+
+
+def filterTub(tubName,color, tint):
 
     absoluteTubName = directory + "\\" + tubName + "\\" + tubName
     allFiles = os.listdir(absoluteTubName)
@@ -30,37 +70,7 @@ def filterImages(tubName,color, tint):
 
             im = Image.open(absoluteTubName + "\\" + file)
 
-            width, height = im.size
-
-            pix = im.load()
-
-            for i in range( (width//2)-(sideLength//2), (width//2)+(sideLength//2) ):
-                for j in range(yPosition, sideLength+yPosition):
-
-                    red = pix[i,j][0]
-                    green = pix[i,j][1]
-                    blue = pix[i,j][2]
-
-                    if color == "r":
-                        red = 255
-
-                        if tint == "f":
-                            green = 0
-                            blue = 0
-
-                    elif color == "g":
-                        green = 255
-
-                        if tint == "f":
-                            red = 0
-                            blue = 0
-
-                    elif color == "b":
-                        if tint == "f":
-                            green = 0
-                            red = 0
-
-                    pix[i,j] = (red,green,blue)
+            im = filterImage(im,color,tint)
 
             im.save(newAbsoluteTubName + "\\" + file)
 
@@ -77,7 +87,7 @@ if __name__ == "__main__":
     color = args[2]
     tint = args[3]
 
-    filterImages(tubName, color, tint)
+    filterTub(tubName, color, tint)
 
 
 
