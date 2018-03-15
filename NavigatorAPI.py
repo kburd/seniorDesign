@@ -1,13 +1,12 @@
 from PIL import Image
+from email.mime.multipart import MIMEMultipart
+import smtplib
 import os
 import sys
 
 #Cmd Line:  python <location of this file> <name of tub> <color> <fill or tint>
 #Ex:        python C:\Users\kaleb\PycharmProjects\SeniorDesign\filter.py tub_1_18-03-04 r f
 
-
-
-directory = "C:\\Users\\kaleb\\d2\\data"
 
 
 
@@ -53,6 +52,8 @@ def filterImage(image,color,tint):
 
 def filterTub(tubName,color, tint):
 
+    directory = "C:\\Users\\kaleb\\d2\\data"
+
     absoluteTubName = directory + "\\" + tubName + "\\" + tubName
     allFiles = os.listdir(absoluteTubName)
 
@@ -78,6 +79,27 @@ def filterTub(tubName,color, tint):
         else:
 
             os.rename(absoluteTubName + "\\" + file, newAbsoluteTubName + "\\" + file)
+
+
+def emailIP():
+
+
+    emailfrom = "navigatorSeniorDesign@gmail.com"
+    password = "navigator18"
+
+
+    emailto = "navigatorSeniorDesign@gmail.com"
+
+    msg = MIMEMultipart()
+    msg['From'] = emailfrom
+    msg['To'] = emailto
+    msg['Subject'] = 'IP HERE'
+
+    server = smtplib.SMTP("smtp.gmail.com:587")
+    server.starttls()
+    server.login(emailfrom, password)
+    server.sendmail(emailfrom, emailto, msg.as_string())
+    server.quit()
 
 
 if __name__ == "__main__":
