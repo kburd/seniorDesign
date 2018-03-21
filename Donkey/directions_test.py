@@ -2,7 +2,7 @@ import googlemaps
 from direction_consts import API_KEY, TRAVEL_MODE
 from datetime import datetime as dt
 from pprint import pprint
-from samGPSedits import check_serial, getLatLong
+from Donkey.samGPSedits import getLatLong
 directions = googlemaps.directions
 #Set the API-KEY
 gmap = googlemaps.Client(key=API_KEY)

@@ -1,4 +1,6 @@
 from PIL import Image
+from email.mime.multipart import MIMEMultipart
+import smtplib
 import os
 import sys
 import click
@@ -7,9 +9,6 @@ from pathlib import Path
 #Cmd Line:  python <location of this file> <name of tub> <color> <fill or tint>
 #Ex:        python C:\Users\kaleb\PycharmProjects\SeniorDesign\filter.py tub_1_18-03-04 r f
 
-
-
-directory = "C:\\Users\\kaleb\\d2\\data"
 
 
 
@@ -52,28 +51,52 @@ def filterImage(image,color,tint):
 
     return image
 
-@click.command()
-@click.argument('tubname', type=click.Path(exists=True, dir_okay=True, file_okay=False, readable=True))
-@click.argument('dst', type=click.Path(exists=True, dir_okay=True, file_okay=False, writable=True))
-@click.argument('color', type=click.Choice(['r','g','b']))
-@click.argument('tint', type=click.Choice(['t','f']))
-def filterTub(tubname, dst, color, tint):
-    #The location of the tub images
-    tubPath = Path(tubname)
-    #The location where they will be saved
-    destination = Path(dst)
-    newTubName = tubPath.name + "_filtered"
-    newTubPath = destination / newTubName
-    newTubPath.mkdir(exist_ok=True, parents=True)
-    
-    with click.progressbar(tubPath.glob('*.jpg')) as tub_images:
-        #Iterate through all of the jpgs
-        for file in tub_images:
-            extension = file.name.split(".")[1]
-            im = Image.open(file.absolute())
+
+def filterTub(tubName,color, tint):
+
+    directory = "C:\\Users\\kaleb\\d2\\data"
+
+    absoluteTubName = directory + "\\" + tubName + "\\" + tubName
+    allFiles = os.listdir(absoluteTubName)
+
+    newTubName = tubName + "Filtered"
+    newAbsoluteTubName = directory + "\\" + newTubName + "\\" + newTubName
+
+    if not os.path.exists(newAbsoluteTubName):
+        os.makedirs(newAbsoluteTubName)
+
+    for file in allFiles:
+
+        extension = file.split(".")[1]
+
+        if extension == "jpg":
+
+            im = Image.open(absoluteTubName + "\\" + file)
+
             im = filterImage(im,color,tint)
             new_image_path = Path(newTubPath / file.name)
             im.save(new_image_path.absolute())
+
+
+def emailIP():
+
+
+    emailfrom = "navigatorSeniorDesign@gmail.com"
+    password = "navigator18"
+
+
+    emailto = "navigatorSeniorDesign@gmail.com"
+
+    msg = MIMEMultipart()
+    msg['From'] = emailfrom
+    msg['To'] = emailto
+    msg['Subject'] = 'IP HERE'
+
+    server = smtplib.SMTP("smtp.gmail.com:587")
+    server.starttls()
+    server.login(emailfrom, password)
+    server.sendmail(emailfrom, emailto, msg.as_string())
+    server.quit()
 
 
 if __name__ == "__main__":
