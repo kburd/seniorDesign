@@ -43,9 +43,9 @@ def filterImage(image,color,tint):
                     red = 0
                     blue = 0
 
-            elif color == "b":
+            elif color == "y":
+                green = red = 255
                 if tint == "f":
-                    green = 0
                     red = 0
 
             pix[i, j] = (red, green, blue)
@@ -55,7 +55,7 @@ def filterImage(image,color,tint):
 @command()
 @argument('tubname', type=clickPath(exists=True, dir_okay=True, file_okay=False, readable=True))
 @argument('dst', type=clickPath(exists=True, dir_okay=True, file_okay=False, writable=True))
-@argument('color', type=Choice(['r','g','b']))
+@argument('color', type=Choice(['r','g','y']))
 @argument('tint', type=Choice(['t','f']))
 def filterTub(tubname, dst, color, tint):
     #The location of the tub images
@@ -77,7 +77,7 @@ def filterTub(tubname, dst, color, tint):
     for file in tqdm(tubPath.glob('*.jpg')):
         extension = file.name.split(".")[1]
         im = Image.open(file.absolute())
-        im = filterImage(im,color,tint)
+        im = filterImage(im, color, tint)
         new_image_path = Path(newTubPath / file.name)
         im.save(new_image_path.absolute())
 
