@@ -46,7 +46,7 @@ def filterImage(image,color,tint):
             elif color == "y":
                 green = red = 255
                 if tint == "f":
-                    red = 0
+                    blue = 0
 
             pix[i, j] = (red, green, blue)
 
